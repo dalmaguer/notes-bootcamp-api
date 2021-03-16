@@ -1,8 +1,11 @@
-const getNextId = require('./utils/index')
+const {getNextId} = require('./utils/index')
 const express = require('express')
+const cors = require('cors')
 
 const app = express()
+
 app.use(express.json())
+app.use(cors())
 
 let notes = [{
   id: 1,
@@ -32,7 +35,7 @@ let notes = [{
 // ----------- With Express ----------------
 
 app.get('/',(request, response) => {
-  response.send('<h1>My Notes API 🚀</h1>')
+  response.sendFile(__dirname + '/index.html')
 })
 
 app.get('/api/notes', (request, response) => {

@@ -12,4 +12,4 @@ const getNextId = (arr) => {
   return Number(last.id) + 1
 }
 
-module.exports = getNextId
+module.exports = { getNextId }
