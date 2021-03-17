@@ -1,28 +1,15 @@
-const {getNextId} = require('./utils/index')
+require('dotenv').config()
+require('./mongo')
+// const {getNextId} = require('./utils/index')
 const express = require('express')
 const cors = require('cors')
+const Note = require('./models/Note')
 
 const app = express()
-
 app.use(express.json())
 app.use(cors())
 
-let notes = [{
-  id: 1,
-  content: 'HTML is easy',
-  date: '2019-05-30T17:30:31.098Z',
-  important: true
-}, {
-  id: 2,
-  content: 'Browser can execute only javascript',
-  date: '2019-05-30T17:39:34.091Z',
-  important: false
-}, {
-  id: 3,
-  content: 'React is Awesome',
-  date: '2019-05-30T17:39:34.091Z',
-  important: true
-}]
+let notes = []
 
 // ---------- With Node --------------------
 // const http = require('http')
@@ -39,25 +26,40 @@ app.get('/',(request, response) => {
 })
 
 app.get('/api/notes', (request, response) => {
-  response.json(notes)
+  Note.find({}).then(notes => {
+    response.json(notes)
+  })
 })
 
-app.get('/api/notes/:id', (request, response) => {
+app.get('/api/notes/:id', (request, response, next) => {
   const {id} = request.params
-  const note = notes.find(n => n.id === Number(id))
-
-  note
+  //const note = notes.find(n => n.id === Number(id))
+  Note.findById(id)
+  .then(note => {
+    note
   ? response.json(note)
   : response.status(404).end()
+  })
+  .catch(err => {
+    console.log(err)
+    // response.status(400).end()
+    next(err)
+  })
 })
 
-app.delete('/api/notes/:id', (request, response) => {
+app.delete('/api/notes/:id', (request, response, next) => {
   const {id} = request.params
-  notes = notes.filter(item => item.id !== Number(id))
-  response.status(204).end()
+  // notes = notes.filter(item => item.id !== Number(id))
+  Note.findByIdAndRemove(id)
+  .then(res => {
+    response.status(204).end()
+  })
+  .catch(err => {
+    next(err)
+  })
 })
 
-app.post('/api/notes', (request, response) => {
+app.post('/api/notes', (request, response, next) => {
   const note = request.body
 
   if(!note || !note.content){
@@ -66,17 +68,52 @@ app.post('/api/notes', (request, response) => {
     })
   }
 
-  const newNote = {
-    id: getNextId(notes),
+  const newNote = new Note({
     content: note.content,
-    date: new Date().toISOString(),
+    date: new Date(),
     important: note.important || false
-  }
-  notes = [...notes, newNote]
-  response.status(201).json(newNote)
+  })
+
+  newNote.save()
+  .then(savedNote => {
+    response.json(savedNote)
+  })
+  .catch(err => {
+    next(err)
+  })
 })
 
-const PORT = process.env.PORT || 3001
+app.put('/api/notes/:id', (request, response, next) => {
+  const {id}  = request.params
+  const note = request.body
+
+  const newNoteInfo = {
+    content: note.content,
+    important: note.important || false
+  }
+
+  Note.findByIdAndUpdate(id, newNoteInfo, { new: true })
+  .then(result => {
+    response.json(result)
+  })
+  .catch(err => {
+    next(err)
+  })
+})
+
+app.use((error, request, response, next) => {
+  console.error(error)
+
+  if(error.name === 'CastError'){
+    response.status(400).send({
+      error: 'param id is malformed'
+    })
+  } else {
+    response.status(500).end()
+  }
+})
+
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
