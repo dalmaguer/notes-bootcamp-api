@@ -9,7 +9,7 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
-let notes = []
+// let notes = []
 
 // ---------- With Node --------------------
 // const http = require('http')
@@ -101,6 +101,12 @@ app.put('/api/notes/:id', (request, response, next) => {
   })
 })
 
+// ----- midlewares -------------
+
+app.use((response, request, next) => {
+  response.status(404)
+})
+
 app.use((error, request, response, next) => {
   console.error(error)
 
@@ -112,6 +118,8 @@ app.use((error, request, response, next) => {
     response.status(500).end()
   }
 })
+
+// ------ end midlewares -------------
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
