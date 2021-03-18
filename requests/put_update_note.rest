@@ -1,6 +1,6 @@
-PUT http://localhost:3001/api/notes/60527e8a6f237fa5335de93a
+PUT http://localhost:3001/api/notes/605267046def8b8ac1ed722a
 content-type: application/json
 
 {
-  "content": "Esta es la nueva nota actualizada"
+  "content": "Esta es una nota para borrar"
 }

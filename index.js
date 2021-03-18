@@ -1,13 +1,18 @@
 require('dotenv').config()
 require('./mongo')
-// const {getNextId} = require('./utils/index')
+
 const express = require('express')
+const app = express()
 const cors = require('cors')
 const Note = require('./models/Note')
+const notFound = require('./middleware/notFound')
+const handleErrors = require('./middleware/handleErrors')
+const path = require('path')
 
-const app = express()
-app.use(express.json())
+const PUBLIC_FOLDER = path.join(__dirname, 'public')
+
 app.use(cors())
+app.use(express.json())
 
 // let notes = []
 
@@ -22,8 +27,11 @@ app.use(cors())
 // ----------- With Express ----------------
 
 app.get('/',(request, response) => {
-  response.sendFile(__dirname + '/index.html')
+  response.sendFile(PUBLIC_FOLDER + '/index.html')
 })
+
+// Servir estaticos de una carpeta
+app.use('/images', express.static('images'))
 
 app.get('/api/notes', (request, response) => {
   Note.find({}).then(notes => {
@@ -41,8 +49,6 @@ app.get('/api/notes/:id', (request, response, next) => {
   : response.status(404).end()
   })
   .catch(err => {
-    console.log(err)
-    // response.status(400).end()
     next(err)
   })
 })
@@ -50,8 +56,8 @@ app.get('/api/notes/:id', (request, response, next) => {
 app.delete('/api/notes/:id', (request, response, next) => {
   const {id} = request.params
   // notes = notes.filter(item => item.id !== Number(id))
-  Note.findByIdAndRemove(id)
-  .then(res => {
+  Note.findByIdAndDelete(id)
+  .then(() => {
     response.status(204).end()
   })
   .catch(err => {
@@ -101,24 +107,9 @@ app.put('/api/notes/:id', (request, response, next) => {
   })
 })
 
-// ----- midlewares -------------
-
-app.use((response, request, next) => {
-  response.status(404)
-})
-
-app.use((error, request, response, next) => {
-  console.error(error)
-
-  if(error.name === 'CastError'){
-    response.status(400).send({
-      error: 'param id is malformed'
-    })
-  } else {
-    response.status(500).end()
-  }
-})
-
+// ----- middlewares -------------
+app.use(notFound)
+app.use(handleErrors)
 // ------ end midlewares -------------
 
 const PORT = process.env.PORT
