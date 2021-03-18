@@ -17,6 +17,7 @@ app.use(express.json())
 // let notes = []
 
 // ---------- With Node --------------------
+
 // const http = require('http')
 
 // const app = http.createServer((request, response) => {
@@ -48,9 +49,7 @@ app.get('/api/notes/:id', (request, response, next) => {
   ? response.json(note)
   : response.status(404).end()
   })
-  .catch(err => {
-    next(err)
-  })
+  .catch(err => next(err))
 })
 
 app.delete('/api/notes/:id', (request, response, next) => {
@@ -60,9 +59,7 @@ app.delete('/api/notes/:id', (request, response, next) => {
   .then(() => {
     response.status(204).end()
   })
-  .catch(err => {
-    next(err)
-  })
+  .catch(err => next(err))
 })
 
 app.post('/api/notes', (request, response, next) => {
@@ -84,9 +81,7 @@ app.post('/api/notes', (request, response, next) => {
   .then(savedNote => {
     response.json(savedNote)
   })
-  .catch(err => {
-    next(err)
-  })
+  .catch(err => next(err))
 })
 
 app.put('/api/notes/:id', (request, response, next) => {
@@ -102,9 +97,7 @@ app.put('/api/notes/:id', (request, response, next) => {
   .then(result => {
     response.json(result)
   })
-  .catch(err => {
-    next(err)
-  })
+  .catch(err => next(err))
 })
 
 // ----- middlewares -------------
