@@ -3,7 +3,7 @@ const { average } = require('../utils/for_testing')
 // Test unitarios con jest
 
 describe('average', () => {
-  test('of many numbers', () => {
+  test('of many numbers from 1 to 7 is 4', () => {
     const result = average([1, 2, 3, 4, 5, 6, 7])
     expect(result).toBe(4)
   })

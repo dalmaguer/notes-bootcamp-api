@@ -1,4 +1,4 @@
-const palindrome = (str) => {
+const reversed = (str) => {
   if (typeof str === 'undefined') return
 
   return str
@@ -24,6 +24,6 @@ const average = arr => {
 }
 
 module.exports = {
-  palindrome,
+  reversed,
   average
 }
