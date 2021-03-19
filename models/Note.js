@@ -1,4 +1,4 @@
-const {Schema, model} = require('mongoose')
+const { Schema, model } = require('mongoose')
 const noteSchema = Schema({
   content: String,
   date: Date,
@@ -13,7 +13,7 @@ noteSchema.set('toJSON', {
   }
 })
 
-const Note = model('Note',noteSchema)
+const Note = model('Note', noteSchema)
 
 // Note.find({})
 // .then(result => {

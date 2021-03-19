@@ -27,7 +27,7 @@ app.use(express.json())
 
 // ----------- With Express ----------------
 
-app.get('/',(request, response) => {
+app.get('/', (request, response) => {
   response.sendFile(PUBLIC_FOLDER + '/index.html')
 })
 
@@ -41,31 +41,31 @@ app.get('/api/notes', (request, response) => {
 })
 
 app.get('/api/notes/:id', (request, response, next) => {
-  const {id} = request.params
-  //const note = notes.find(n => n.id === Number(id))
+  const { id } = request.params
+  // const note = notes.find(n => n.id === Number(id))
   Note.findById(id)
-  .then(note => {
-    note
-  ? response.json(note)
-  : response.status(404).end()
-  })
-  .catch(err => next(err))
+    .then(note => {
+      note
+        ? response.json(note)
+        : response.status(404).end()
+    })
+    .catch(err => next(err))
 })
 
 app.delete('/api/notes/:id', (request, response, next) => {
-  const {id} = request.params
+  const { id } = request.params
   // notes = notes.filter(item => item.id !== Number(id))
   Note.findByIdAndDelete(id)
-  .then(() => {
-    response.status(204).end()
-  })
-  .catch(err => next(err))
+    .then(() => {
+      response.status(204).end()
+    })
+    .catch(err => next(err))
 })
 
 app.post('/api/notes', (request, response, next) => {
   const note = request.body
 
-  if(!note || !note.content){
+  if (!note || !note.content) {
     return response.status(400).json({
       error: 'note.content is missing'
     })
@@ -78,14 +78,14 @@ app.post('/api/notes', (request, response, next) => {
   })
 
   newNote.save()
-  .then(savedNote => {
-    response.json(savedNote)
-  })
-  .catch(err => next(err))
+    .then(savedNote => {
+      response.json(savedNote)
+    })
+    .catch(err => next(err))
 })
 
 app.put('/api/notes/:id', (request, response, next) => {
-  const {id}  = request.params
+  const { id } = request.params
   const note = request.body
 
   const newNoteInfo = {
@@ -94,10 +94,10 @@ app.put('/api/notes/:id', (request, response, next) => {
   }
 
   Note.findByIdAndUpdate(id, newNoteInfo, { new: true })
-  .then(result => {
-    response.json(result)
-  })
-  .catch(err => next(err))
+    .then(result => {
+      response.json(result)
+    })
+    .catch(err => next(err))
 })
 
 // ----- middlewares -------------

@@ -7,12 +7,12 @@ mongoose.connect(connectionString, {
   useUnifiedTopology: true,
   useFindAndModify: false
 })
-.then(() => {
-  console.log('Database connected')
-})
-.catch(err => {
-  console.log(err)
-})
+  .then(() => {
+    console.log('Database connected')
+  })
+  .catch(err => {
+    console.log(err)
+  })
 
 process.on('uncaughtException', () => {
   mongoose.connection.close()
