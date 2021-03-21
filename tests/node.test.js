@@ -58,6 +58,26 @@ test('insert new note without content must fail', async () => {
   expect(response).toHaveLength(initialNotes.length)
 })
 
+test('a note can be deleted', async () => {
+  const { response: notesBeforeDelete } = await getAllNotesFromApi()
+  const noteToDelete = notesBeforeDelete[0]
+  await api.delete(`/api/notes/${noteToDelete.id}`)
+    .expect(204)
+
+  const { response: notesAfterDelete, contents } = await getAllNotesFromApi()
+  expect(notesAfterDelete).toHaveLength(initialNotes.length - 1)
+  expect(contents).not.toContain(noteToDelete.content)
+})
+
+test('a note that not exists can not be deleted', async () => {
+  await api.delete('/api/notes/45654')
+    .expect(400)
+
+  const { response: notesAfterDelete } = await getAllNotesFromApi()
+
+  expect(notesAfterDelete).toHaveLength(initialNotes.length)
+})
+
 afterAll(() => {
   mongoose.connection.close()
   server.close()
