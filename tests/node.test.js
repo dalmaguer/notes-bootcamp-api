@@ -8,11 +8,10 @@ const { api, getAllNotesFromApi, initialNotes } = require('./helpers')
 beforeEach(async () => {
   await Note.deleteMany({})
 
-  const note1 = new Note(initialNotes[0])
-  note1.save()
-
-  const note2 = new Note(initialNotes[1])
-  note2.save()
+  for (const note of initialNotes) {
+    const noteObject = new Note(note)
+    await noteObject.save()
+  }
 })
 
 test('notes are returned as json', async () => {
