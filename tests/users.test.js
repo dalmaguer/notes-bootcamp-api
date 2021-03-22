@@ -6,8 +6,7 @@ const User = require('../models/User')
 const {
   api,
   initialUsers,
-  getAllUsersFromApi,
-  getAllNotesFromApi
+  getAllUsersFromApi
 } = require('./helpers')
 
 beforeEach(async () => {
@@ -40,6 +39,28 @@ describe('users', () => {
 
     const usernames = usersAtEnd.map(user => user.username)
     expect(usernames).toContain(newUser.username)
+  })
+
+  test('creating a new user with an existing username must fail', async () => {
+    const usersAtStart = await getAllUsersFromApi()
+
+    const newUser = {
+      username: 'testinguser',
+      name: 'Testing user',
+      password: '12345678'
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    expect(result.body.errors.username.message)
+      .toContain('`username` to be unique')
+
+    const usersAtEnd = await getAllUsersFromApi()
+    expect(usersAtStart).toHaveLength(usersAtEnd.length)
   })
 })
 
