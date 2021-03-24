@@ -1,8 +1,12 @@
 const notesRouter = require('express').Router()
 const Note = require('../models/Note')
+const User = require('../models/User')
 
 notesRouter.get('/', (request, response) => {
-  Note.find({}).then(notes => {
+  Note.find({}).populate('user', {
+    username: 1,
+    name: 1
+  }).then(notes => {
     response.json(notes)
   })
 })
@@ -29,26 +33,46 @@ notesRouter.delete('/:id', (request, response, next) => {
     .catch(err => next(err))
 })
 
-notesRouter.post('/', (request, response, next) => {
-  const note = request.body
+notesRouter.post('/', async (request, response, next) => {
+  const {
+    content,
+    important = false,
+    userId
+  } = request.body
 
-  if (!note || !note.content) {
+  const user = await User.findById(userId)
+
+  if (!content) {
     return response.status(400).json({
       error: 'note.content is missing'
     })
   }
 
   const newNote = new Note({
-    content: note.content,
+    content,
     date: new Date(),
-    important: note.important || false
+    important,
+    user: user.id
   })
 
-  newNote.save()
-    .then(savedNote => {
-      response.json(savedNote)
-    })
-    .catch(err => next(err))
+  // await newNote.save()
+  //   .then(savedNote => {
+  //     response.json(savedNote)
+  //   })
+  //   .catch(err => next(err))
+
+  try {
+    const savedNote = await newNote.save()
+
+    // Guardar id de la nota agregada en las notas del usuario
+    user.notes = user.notes.concat(savedNote._id)
+    await user.save()
+    // ------
+
+    response.json(savedNote)
+  } catch (error) {
+    next(error)
+  }
 })
 
 notesRouter.put('/:id', (request, response, next) => {

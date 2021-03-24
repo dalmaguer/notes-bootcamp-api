@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 
 const { server } = require('../index')
 const Note = require('../models/Note')
+const User = require('../models/User')
 const { api, getAllNotesFromApi, initialNotes } = require('./helpers')
 
 describe('Notes', () => {
@@ -33,8 +34,10 @@ describe('Notes', () => {
   })
 
   test('A note can be created', async () => {
+    const firstUser = await User.findOne()
     const newNote = {
-      content: 'Nueva Nota'
+      content: 'Nueva Nota',
+      userId: firstUser._id
     }
     await api
       .post('/api/notes')

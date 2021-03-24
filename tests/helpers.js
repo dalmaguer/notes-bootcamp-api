@@ -31,7 +31,7 @@ const initialUsers = async () => {
   }]
 }
 
-const getAllUsersFromApi = async () => {
+const getAllUsers = async () => {
   const usersInDB = await User.find({})
   return usersInDB.map(user => user.toJSON())
 }
@@ -39,7 +39,7 @@ const getAllUsersFromApi = async () => {
 module.exports = {
   api,
   getAllNotesFromApi,
-  getAllUsersFromApi,
+  getAllUsers,
   initialNotes,
   initialUsers
 }
