@@ -1,6 +1,8 @@
-PUT http://localhost:3001/api/notes/605267046def8b8ac1ed722a
+PUT http://localhost:3001/api/notes/606203746d5dbb14556fb509
 content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNTdmNGIxNTE4NjM3NWI1MDljZDNjZCIsInVzZXJuYW1lIjoiZGFsbWFndWVyIiwiaWF0IjoxNjE3MDM2MTAzLCJleHAiOjE2MTc2NDA5MDN9.QqTVI_PtgLraLmKvSeZFJRUt7_VG7WoHTmRXEtU4Kwk
+
 
 {
-  "content": "Esta es una nota para borrar"
+  "content": "Esta la voy a borrar luego"
 }

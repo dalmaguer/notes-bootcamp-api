@@ -12,6 +12,7 @@ const handleErrors = require('./middleware/handleErrors')
 const path = require('path')
 const usersRouter = require('./controllers/users')
 const notesRouter = require('./controllers/notes')
+const loginRouter = require('./controllers/login')
 
 const PUBLIC_FOLDER = path.join(__dirname, 'public')
 
@@ -52,6 +53,9 @@ app.get('/', (request, response) => {
 
 // Servir estaticos de una carpeta
 app.use('/images', express.static('images'))
+
+// Login Router
+app.use('/api/login', loginRouter)
 
 // Users Router
 app.use('/api/users', usersRouter)

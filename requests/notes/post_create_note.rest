@@ -1,10 +1,10 @@
 POST http://localhost:3001/api/notes
 content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNTdmNGIxNTE4NjM3NWI1MDljZDNjZCIsInVzZXJuYW1lIjoiZGFsbWFndWVyIiwiaWF0IjoxNjE3MDM2MTAzLCJleHAiOjE2MTc2NDA5MDN9.QqTVI_PtgLraLmKvSeZFJRUt7_VG7WoHTmRXEtU4Kwk
 
 {
-  "content": "Esta es una nueva nota 😃",
-  "important": true,
-  "userId": "6057f4b15186375b509cd3cd"
+  "content": "Una Nota para borrar",
+  "important": true
 }
 
 ###
